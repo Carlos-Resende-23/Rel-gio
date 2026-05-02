@@ -1,0 +1,35 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(120deg, darkblue, purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.relogio {
+  height: 400px;
+  width: 700px;
+  border: 2px black;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px;
+  display: flex;
+  align-items: center;
+}
+
+span {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  margin: 30px;
+  font-size: 40px;
+  box-shadow: 5px 5px 10px;
+  border-radius: 5px;
+  color: aliceblue;
+}
