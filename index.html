@@ -8,19 +8,26 @@
   </head>
   <body>
     <div class="relogio">
-      <div>
-        <span class="tempo">horas</span>
-        <span id="horas">00</span>
+      <div class="tempo">
+        <div class="bloco">
+          <span class="label">Horas</span>
+          <span id="horas">00</span>
+        </div>
+
+        <div class="bloco">
+          <span class="label">Minutos</span>
+          <span id="minutos">00</span>
+        </div>
+
+        <div class="bloco">
+          <span class="label">Segundos</span>
+          <span id="segundos">00</span>
+        </div>
       </div>
-      <div>
-        <span class="tempo">minutos</span>
-        <span id="minutos">00</span>
-      </div>
-      <div>
-        <span class="tempo">segundos</span>
-        <span id="segundos">00</span>
-      </div>
+
+      <div id="data"></div>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
