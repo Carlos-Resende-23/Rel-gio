@@ -25,3 +25,25 @@ const relogio = setInterval(function time() {
   segundos.textContent = s
   data.textContent = `${diaSemana} - ${dia}/${mes}/${ano}`
 }, 1000)
+
+const temaBtn = document.getElementById("tema-btn")
+
+temaBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark")
+  salvarTema()
+})
+
+function salvarTema() {
+  const isDark = document.body.classList.contains("dark")
+  localStorage.setItem("temaEscuro", isDark)
+}
+
+function carregaTema() {
+  const temaSalvo = localStorage.getItem(temaEscuro)
+
+  if (temaSalvo === "true") {
+    document.body.classList.add("dark")
+  }
+}
+
+carregarTema()
