@@ -6,7 +6,12 @@
 
 body {
   height: 100vh;
-  background: linear-gradient(-240deg, darkblue, rgb(73, 1, 73), black);
+  background: linear-gradient(
+    -240deg,
+    rgb(12, 139, 0),
+    rgb(1, 44, 73),
+    rgb(151, 87, 180)
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,12 +76,11 @@ span {
 }
 
 .dark {
-  background: #111;
+  background: linear-gradient(-240deg, darkblue, rgb(73, 1, 73), black);
   color: white;
 }
 
 .dark .relogio {
-  background: #222;
   box-shadow: 0 0 20px #000;
 }
 
