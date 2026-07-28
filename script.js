@@ -3,6 +3,36 @@ const minutos = document.getElementById("minutos")
 const segundos = document.getElementById("segundos")
 const data = document.getElementById("data")
 const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
+const cronometro = document.getElementById("cronometro")
+const btnIniciar = document.getElementById("iniciar")
+const btnPausar = document.getElementById("pausar")
+const btnReiniciar = document.getElementById("reiniciar")
+
+let tempoCronometro = 0
+let intervalo = null
+
+function atualizarCronometro() {
+  let horas = Math.floor(tempoCronometro / 3600)
+  let minutos = Math.floor((tempoCronometro % 3600) / 60)
+  let segundos = tempoCronometro % 60
+
+  if (horas < 10) horas = "0" + horas
+  if (minutos < 10) minutos = "0" + minutos
+  if (segundos < 10) segundos = "0" + segundos
+
+  cronometro.textContent = `${horas}:${minutos}:${segundos}`
+}
+
+btnIniciar.addEventListener("click", () => {
+  intervalo = setInterval(() => {
+    tempoCronometro++
+    atualizarCronometro()
+  }, 1000)
+})
+
+btnPausar.addEventListener("click")
+
+btnReiniciar.addEventListener("click")
 
 const relogio = setInterval(function time() {
   let dateToday = new Date()
@@ -38,8 +68,8 @@ function salvarTema() {
   localStorage.setItem("temaEscuro", isDark)
 }
 
-function carregaTema() {
-  const temaSalvo = localStorage.getItem(temaEscuro)
+function carregarTema() {
+  const temaSalvo = localStorage.getItem("temaEscuro")
 
   if (temaSalvo === "true") {
     document.body.classList.add("dark")
