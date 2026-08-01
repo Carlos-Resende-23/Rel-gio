@@ -30,9 +30,9 @@ btnIniciar.addEventListener("click", () => {
   }, 1000)
 })
 
-btnPausar.addEventListener("click")
+btnPausar.addEventListener("click", () => {})
 
-btnReiniciar.addEventListener("click")
+btnReiniciar.addEventListener("click", () => {})
 
 const relogio = setInterval(function time() {
   let dateToday = new Date()

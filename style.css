@@ -29,9 +29,9 @@ body {
   align-items: center;
 }
 
-#cronometro {
+.cronometro-container {
   min-height: 220px;
-  width: 320px;
+  width: min(90vw, 320px);
   border: 2px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
@@ -43,16 +43,17 @@ body {
   justify-content: center;
   background: rgba(255, 255, 255, 0.08);
   color: white;
+  box-sizing: border-box;
 }
 
-.botoes {
+.botoes-cronometro {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-#tempo2 {
+#cronometro {
   font-size: 48px;
   font-weight: bold;
   margin: 12px 0 16px;
