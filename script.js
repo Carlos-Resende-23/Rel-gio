@@ -24,15 +24,26 @@ function atualizarCronometro() {
 }
 
 btnIniciar.addEventListener("click", () => {
+  if (intervalo !== null) {
+    return
+  }
   intervalo = setInterval(() => {
     tempoCronometro++
     atualizarCronometro()
   }, 1000)
 })
 
-btnPausar.addEventListener("click", () => {})
+btnPausar.addEventListener("click", () => {
+  clearInterval(intervalo)
+  intervalo = null
+})
 
-btnReiniciar.addEventListener("click", () => {})
+btnReiniciar.addEventListener("click", () => {
+  clearInterval(intervalo)
+  intervalo = null
+  tempoCronometro = 0
+  atualizarCronometro()
+})
 
 const relogio = setInterval(function time() {
   let dateToday = new Date()
