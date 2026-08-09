@@ -7,6 +7,10 @@ const cronometro = document.getElementById("cronometro")
 const btnIniciar = document.getElementById("iniciar")
 const btnPausar = document.getElementById("pausar")
 const btnReiniciar = document.getElementById("reiniciar")
+const btnVolta = document.getElementById("volta")
+const listaVoltas = document.getElementById("lista-voltas")
+
+const voltas = []
 
 let tempoCronometro = 0
 let intervalo = null
@@ -44,6 +48,23 @@ btnReiniciar.addEventListener("click", () => {
   tempoCronometro = 0
   atualizarCronometro()
 })
+
+btnVolta.addEventListener("click", () => {
+  voltas.push(tempoCronometro)
+  mostrarVoltas()
+})
+
+function mostrarVoltas() {
+  listaVoltas.innerHTML = ""
+
+  voltas.forEach((volta, index) => {
+    const li = document.createElement("li")
+
+    li.textContent = `Volta ${index + 1}: ${volta}`
+
+    listaVoltas.appendChild(li)
+  })
+}
 
 const relogio = setInterval(function time() {
   let dateToday = new Date()
