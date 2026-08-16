@@ -3,6 +3,7 @@ const minutos = document.getElementById("minutos")
 const segundos = document.getElementById("segundos")
 const data = document.getElementById("data")
 const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
+
 const cronometro = document.getElementById("cronometro")
 const btnIniciar = document.getElementById("iniciar")
 const btnPausar = document.getElementById("pausar")
@@ -15,22 +16,27 @@ const voltas = []
 let tempoCronometro = 0
 let intervalo = null
 
-function atualizarCronometro() {
-  let horas = Math.floor(tempoCronometro / 3600)
-  let minutos = Math.floor((tempoCronometro % 3600) / 60)
-  let segundos = tempoCronometro % 60
+function formatarTempo(tempo) {
+  let horas = Math.floor(tempo / 3600)
+  let minutos = Math.floor((tempo % 3600) / 60)
+  let segundos = tempo % 60
 
   if (horas < 10) horas = "0" + horas
   if (minutos < 10) minutos = "0" + minutos
   if (segundos < 10) segundos = "0" + segundos
 
-  cronometro.textContent = `${horas}:${minutos}:${segundos}`
+  return `${horas}:${minutos}:${segundos}`
+}
+
+function atualizarCronometro() {
+  cronometro.textContent = formatarTempo(tempoCronometro)
 }
 
 btnIniciar.addEventListener("click", () => {
   if (intervalo !== null) {
     return
   }
+
   intervalo = setInterval(() => {
     tempoCronometro++
     atualizarCronometro()
@@ -45,6 +51,7 @@ btnPausar.addEventListener("click", () => {
 btnReiniciar.addEventListener("click", () => {
   clearInterval(intervalo)
   intervalo = null
+
   tempoCronometro = 0
   atualizarCronometro()
 })
@@ -60,11 +67,13 @@ function mostrarVoltas() {
   voltas.forEach((volta, index) => {
     const li = document.createElement("li")
 
-    li.textContent = `Volta ${index + 1}: ${volta}`
+    li.textContent = `Volta ${index + 1}: ${formatarTempo(volta)}`
 
     listaVoltas.appendChild(li)
   })
 }
+
+atualizarCronometro()
 
 const relogio = setInterval(function time() {
   let dateToday = new Date()
