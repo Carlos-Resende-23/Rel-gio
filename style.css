@@ -5,7 +5,9 @@
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
   background: linear-gradient(
     -240deg,
     rgb(12, 139, 0),
@@ -19,8 +21,8 @@ body {
 }
 
 .relogio {
-  height: 400px;
-  width: 700px;
+  min-height: 400px;
+  width: min(700px, 100%);
   border: 2px black;
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
@@ -30,8 +32,8 @@ body {
 }
 
 .cronometro-container {
-  height: 340px;
-  width: 700px;
+  min-height: 340px;
+  width: min(700px, 100%);
   border: 2px black;
   border-radius: 10px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
@@ -93,6 +95,7 @@ span {
   display: flex;
   gap: 25px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .bloco {
@@ -136,4 +139,46 @@ button {
 button:hover {
   background: #ccc;
   color: #000;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  .relogio {
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .cronometro-container {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .tempo {
+    gap: 8px;
+  }
+
+  .tempo span {
+    margin: 8px;
+    padding: 12px;
+  }
+
+  #horas,
+  #minutos,
+  #segundos {
+    font-size: 42px;
+  }
+
+  #cronometro {
+    font-size: 36px;
+  }
+
+  #data {
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
 }
