@@ -8,6 +8,7 @@ body {
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  color: white;
   background: linear-gradient(
     -240deg,
     rgb(12, 139, 0),
@@ -21,24 +22,23 @@ body {
 }
 
 .relogio {
-  min-height: 400px;
   width: min(700px, 100%);
-  border: 2px black;
+  padding: 18px 24px 20px;
+  box-sizing: border-box;
   border-radius: 10px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .cronometro-container {
-  min-height: 340px;
   width: min(700px, 100%);
-  border: 2px black;
   border-radius: 10px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
   display: flex;
-  padding: 20px;
+  padding: 18px;
   margin-top: 20px;
   flex-direction: column;
   align-items: center;
@@ -68,27 +68,27 @@ body {
   font-weight: bold;
 }
 
-span {
+.bloco > span:not(.label) {
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 20px;
-  margin: 30px;
+  min-width: 108px;
+  padding: 16px 20px;
+  margin: 12px 0;
   font-size: 40px;
-  box-shadow: 5px 5px 10px;
-  border-radius: 5px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+  border-radius: 8px;
   color: aliceblue;
 }
 
 #data {
-  margin-top: 8px;
-  font-size: 25px;
-  letter-spacing: 3px;
-  color: #f0f0f0;
-  align-items: center;
-  font-weight: 200;
-  box-shadow: 5px 5px 10px aliceblue;
-  border-radius: 10px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
+  font-size: 17px;
+  letter-spacing: 1.5px;
+  color: rgba(240, 240, 240, 0.78);
+  font-weight: 400;
 }
 
 .tempo {
@@ -123,7 +123,7 @@ span {
 
 .dark .relogio,
 .dark .cronometro-container {
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
 }
 
 button {
@@ -137,8 +137,8 @@ button {
 }
 
 button:hover {
-  background: #ccc;
-  color: #000;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 @media (max-width: 600px) {
@@ -161,7 +161,7 @@ button:hover {
     gap: 8px;
   }
 
-  .tempo span {
+  .tempo .bloco > span:not(.label) {
     margin: 8px;
     padding: 12px;
   }
