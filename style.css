@@ -64,6 +64,12 @@ body {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
 }
 
+.milissegundos {
+  font-size: 0.55em;
+  vertical-align: baseline;
+  opacity: 0.85;
+}
+
 #lista-voltas {
   font-weight: bold;
 }

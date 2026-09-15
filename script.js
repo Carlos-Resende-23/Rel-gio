@@ -5,6 +5,8 @@ const data = document.getElementById("data")
 const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
 
 const cronometro = document.getElementById("cronometro")
+const tempoPrincipal = document.getElementById("tempo-principal")
+const milissegundos = document.querySelector(".milissegundos")
 const btnIniciar = document.getElementById("iniciar")
 const btnPausar = document.getElementById("pausar")
 const btnReiniciar = document.getElementById("reiniciar")
@@ -14,22 +16,33 @@ const listaVoltas = document.getElementById("lista-voltas")
 const voltas = []
 
 let tempoCronometro = 0
+let inicioCronometro = 0
+let tempoPausado = 0
 let intervalo = null
 
 function formatarTempo(tempo) {
-  let horas = Math.floor(tempo / 3600)
-  let minutos = Math.floor((tempo % 3600) / 60)
-  let segundos = tempo % 60
+  let horas = Math.floor(tempo / 3600000)
+  let minutos = Math.floor((tempo % 3600000) / 60000)
+  let segundos = Math.floor((tempo % 60000) / 1000)
+  let ms = tempo % 1000
 
   if (horas < 10) horas = "0" + horas
   if (minutos < 10) minutos = "0" + minutos
   if (segundos < 10) segundos = "0" + segundos
 
-  return `${horas}:${minutos}:${segundos}`
+  ms = String(ms).padStart(3, "0")
+
+  return {
+    principal: `${horas}:${minutos}:${segundos}`,
+    ms: `.${ms}`,
+  }
 }
 
 function atualizarCronometro() {
-  cronometro.textContent = formatarTempo(tempoCronometro)
+  const tempoFormatado = formatarTempo(tempoCronometro)
+
+  tempoPrincipal.textContent = tempoFormatado.principal
+  milissegundos.textContent = tempoFormatado.ms
 }
 
 btnIniciar.addEventListener("click", () => {
@@ -37,15 +50,17 @@ btnIniciar.addEventListener("click", () => {
     return
   }
 
+  inicioCronometro = Date.now() - tempoPausado
   intervalo = setInterval(() => {
-    tempoCronometro++
+    tempoCronometro = Date.now() - inicioCronometro
     atualizarCronometro()
-  }, 1000)
+  }, 10)
 })
 
 btnPausar.addEventListener("click", () => {
   clearInterval(intervalo)
   intervalo = null
+  tempoPausado = tempoCronometro
 })
 
 btnReiniciar.addEventListener("click", () => {
@@ -53,6 +68,7 @@ btnReiniciar.addEventListener("click", () => {
   intervalo = null
 
   tempoCronometro = 0
+  tempoPausado = 0
   atualizarCronometro()
 })
 
@@ -67,7 +83,13 @@ function mostrarVoltas() {
   voltas.forEach((volta, index) => {
     const li = document.createElement("li")
 
-    li.textContent = `Volta ${index + 1}: ${formatarTempo(volta)}`
+    const tempoFormatado = formatarTempo(volta)
+    li.append(`Volta ${index + 1}: ${tempoFormatado.principal}`)
+
+    const milissegundosVolta = document.createElement("span")
+    milissegundosVolta.className = "milissegundos"
+    milissegundosVolta.textContent = tempoFormatado.ms
+    li.appendChild(milissegundosVolta)
 
     listaVoltas.appendChild(li)
   })
