@@ -89,12 +89,17 @@ body {
 
 #data {
   margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.24);
-  font-size: 17px;
-  letter-spacing: 1.5px;
-  color: rgba(240, 240, 240, 0.78);
-  font-weight: 400;
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.14);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .tempo {
@@ -134,17 +139,44 @@ body {
 
 button {
   margin: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 10px;
-  padding: 5px;
-  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.08)
+  );
   color: #fff;
-  transition: 0.3s;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16);
   cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.38),
+    rgba(255, 255, 255, 0.16)
+  );
   color: #fff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
 }
 
 @media (max-width: 600px) {
@@ -183,8 +215,10 @@ button:hover {
   }
 
   #data {
-    font-size: 18px;
-    letter-spacing: 1px;
+    max-width: 100%;
+    padding: 8px 14px;
+    font-size: 12px;
+    letter-spacing: 1.2px;
     text-align: center;
   }
 }
