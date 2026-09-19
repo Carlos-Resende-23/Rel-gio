@@ -49,7 +49,29 @@ body {
   flex-wrap: wrap;
 }
 
+.temporizador-container {
+  width: min(700px, 100%);
+  border-radius: 10px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  padding: 18px;
+  margin-top: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  box-sizing: border-box;
+}
+
 .botoes-cronometro {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.botoes-temporizador {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -62,6 +84,43 @@ body {
   margin: 12px 0 16px;
   color: aliceblue;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+#temporizador {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 12px 0 16px;
+  color: aliceblue;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.campos-temporizador {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.campos-temporizador label {
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.campos-temporizador input {
+  width: 76px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  padding: 10px 8px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.16);
+  color: white;
+  font-size: 20px;
+  text-align: center;
 }
 
 .milissegundos {
@@ -133,7 +192,8 @@ body {
 }
 
 .dark .relogio,
-.dark .cronometro-container {
+.dark .cronometro-container,
+.dark .temporizador-container {
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
 }
 
@@ -195,6 +255,10 @@ button:focus-visible {
     padding: 16px;
   }
 
+  .temporizador-container {
+    padding: 16px;
+  }
+
   .tempo {
     gap: 8px;
   }
@@ -211,6 +275,10 @@ button:focus-visible {
   }
 
   #cronometro {
+    font-size: 36px;
+  }
+
+  #temporizador {
     font-size: 36px;
   }
 

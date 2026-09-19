@@ -53,6 +53,57 @@
       <ul id="lista-voltas"></ul>
     </div>
 
+    <div class="temporizador-container">
+      <h2>Temporizador</h2>
+
+      <div class="campos-temporizador">
+        <label>
+          Horas
+          <input
+            id="horas-temporizador"
+            type="number"
+            min="0"
+            max="99"
+            value="0"
+          />
+        </label>
+        <label>
+          Minutos
+          <input
+            id="minutos-temporizador"
+            type="number"
+            min="0"
+            max="59"
+            value="0"
+          />
+        </label>
+        <label>
+          Segundos
+          <input
+            id="segundos-temporizador"
+            type="number"
+            min="0"
+            max="59"
+            value="0"
+          />
+        </label>
+      </div>
+
+      <p id="temporizador">00:00:00</p>
+
+      <div class="botoes-temporizador">
+        <button id="iniciar-temporizador">
+          <ion-icon name="play-outline"></ion-icon>
+        </button>
+        <button id="pausar-temporizador">
+          <ion-icon name="pause-outline"></ion-icon>
+        </button>
+        <button id="reiniciar-temporizador">
+          <ion-icon name="reload-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
     <script
       type="module"
       src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"

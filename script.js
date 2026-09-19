@@ -12,6 +12,15 @@ const btnPausar = document.getElementById("pausar")
 const btnReiniciar = document.getElementById("reiniciar")
 const btnVolta = document.getElementById("volta")
 const listaVoltas = document.getElementById("lista-voltas")
+const temporizador = document.getElementById("temporizador")
+const horasTemporizador = document.getElementById("horas-temporizador")
+const minutosTemporizador = document.getElementById("minutos-temporizador")
+const segundosTemporizador = document.getElementById("segundos-temporizador")
+const btnIniciarTemporizador = document.getElementById("iniciar-temporizador")
+const btnPausarTemporizador = document.getElementById("pausar-temporizador")
+const btnReiniciarTemporizador = document.getElementById(
+  "reiniciar-temporizador",
+)
 
 const voltas = []
 
@@ -19,6 +28,8 @@ let tempoCronometro = 0
 let inicioCronometro = 0
 let tempoPausado = 0
 let intervalo = null
+let tempoTemporizador = 0
+let intervaloTemporizador = null
 
 function formatarTempo(tempo) {
   let horas = Math.floor(tempo / 3600000)
@@ -43,6 +54,24 @@ function atualizarCronometro() {
 
   tempoPrincipal.textContent = tempoFormatado.principal
   milissegundos.textContent = tempoFormatado.ms
+}
+
+function atualizarTemporizador() {
+  const horas = Math.floor(tempoTemporizador / 3600000)
+  const minutos = Math.floor((tempoTemporizador % 3600000) / 60000)
+  const segundos = Math.floor((tempoTemporizador % 60000) / 1000)
+
+  temporizador.textContent = [horas, minutos, segundos]
+    .map((valor) => String(valor).padStart(2, "0"))
+    .join(":")
+}
+
+function obterTempoTemporizador() {
+  const horas = Number(horasTemporizador.value) || 0
+  const minutos = Number(minutosTemporizador.value) || 0
+  const segundos = Number(segundosTemporizador.value) || 0
+
+  return (horas * 3600 + minutos * 60 + segundos) * 1000
 }
 
 btnIniciar.addEventListener("click", () => {
@@ -77,6 +106,46 @@ btnVolta.addEventListener("click", () => {
   mostrarVoltas()
 })
 
+btnIniciarTemporizador.addEventListener("click", () => {
+  if (intervaloTemporizador !== null) {
+    return
+  }
+
+  if (tempoTemporizador === 0) {
+    tempoTemporizador = obterTempoTemporizador()
+  }
+
+  if (tempoTemporizador === 0) {
+    return
+  }
+
+  let ultimaAtualizacao = Date.now()
+  intervaloTemporizador = setInterval(() => {
+    const agora = Date.now()
+    const tempoDecorrido = agora - ultimaAtualizacao
+    ultimaAtualizacao = agora
+    tempoTemporizador = Math.max(0, tempoTemporizador - tempoDecorrido)
+    atualizarTemporizador()
+
+    if (tempoTemporizador === 0) {
+      clearInterval(intervaloTemporizador)
+      intervaloTemporizador = null
+    }
+  }, 100)
+})
+
+btnPausarTemporizador.addEventListener("click", () => {
+  clearInterval(intervaloTemporizador)
+  intervaloTemporizador = null
+})
+
+btnReiniciarTemporizador.addEventListener("click", () => {
+  clearInterval(intervaloTemporizador)
+  intervaloTemporizador = null
+  tempoTemporizador = obterTempoTemporizador()
+  atualizarTemporizador()
+})
+
 function mostrarVoltas() {
   listaVoltas.innerHTML = ""
 
@@ -96,6 +165,7 @@ function mostrarVoltas() {
 }
 
 atualizarCronometro()
+atualizarTemporizador()
 
 const relogio = setInterval(function time() {
   let dateToday = new Date()
