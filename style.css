@@ -78,6 +78,13 @@ body {
   justify-content: center;
 }
 
+.botoes-voltas {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 #cronometro {
   font-size: 48px;
   font-weight: bold;

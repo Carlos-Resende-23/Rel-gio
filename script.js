@@ -11,6 +11,7 @@ const btnIniciar = document.getElementById("iniciar")
 const btnPausar = document.getElementById("pausar")
 const btnReiniciar = document.getElementById("reiniciar")
 const btnVolta = document.getElementById("volta")
+const btnLimparVoltas = document.getElementById("limpar-voltas")
 const listaVoltas = document.getElementById("lista-voltas")
 const temporizador = document.getElementById("temporizador")
 const horasTemporizador = document.getElementById("horas-temporizador")
@@ -103,6 +104,11 @@ btnReiniciar.addEventListener("click", () => {
 
 btnVolta.addEventListener("click", () => {
   voltas.push(tempoCronometro)
+  mostrarVoltas()
+})
+
+btnLimparVoltas.addEventListener("click", () => {
+  voltas.length = 0
   mostrarVoltas()
 })
 
