@@ -14,6 +14,7 @@ const btnVolta = document.getElementById("volta")
 const btnLimparVoltas = document.getElementById("limpar-voltas")
 const listaVoltas = document.getElementById("lista-voltas")
 const temporizador = document.getElementById("temporizador")
+const avisoTemporizador = document.getElementById("aviso-temporizador")
 const horasTemporizador = document.getElementById("horas-temporizador")
 const minutosTemporizador = document.getElementById("minutos-temporizador")
 const segundosTemporizador = document.getElementById("segundos-temporizador")
@@ -31,6 +32,7 @@ let tempoPausado = 0
 let intervalo = null
 let tempoTemporizador = 0
 let intervaloTemporizador = null
+let avisoTemporizadorTimer = null
 
 function formatarTempo(tempo) {
   let horas = Math.floor(tempo / 3600000)
@@ -75,6 +77,25 @@ function obterTempoTemporizador() {
   return (horas * 3600 + minutos * 60 + segundos) * 1000
 }
 
+function mostrarAvisoTemporizador() {
+  avisoTemporizador.hidden = false
+  avisoTemporizador.classList.remove("visible")
+  void avisoTemporizador.offsetWidth
+  avisoTemporizador.classList.add("visible")
+
+  clearTimeout(avisoTemporizadorTimer)
+  avisoTemporizadorTimer = setTimeout(() => {
+    avisoTemporizador.classList.remove("visible")
+    avisoTemporizador.hidden = true
+  }, 2500)
+}
+
+function esconderAvisoTemporizador() {
+  clearTimeout(avisoTemporizadorTimer)
+  avisoTemporizador.classList.remove("visible")
+  avisoTemporizador.hidden = true
+}
+
 btnIniciar.addEventListener("click", () => {
   if (intervalo !== null) {
     return
@@ -113,6 +134,8 @@ btnLimparVoltas.addEventListener("click", () => {
 })
 
 btnIniciarTemporizador.addEventListener("click", () => {
+  esconderAvisoTemporizador()
+
   if (intervaloTemporizador !== null) {
     return
   }
@@ -136,6 +159,7 @@ btnIniciarTemporizador.addEventListener("click", () => {
     if (tempoTemporizador === 0) {
       clearInterval(intervaloTemporizador)
       intervaloTemporizador = null
+      mostrarAvisoTemporizador()
     }
   }, 100)
 })
@@ -149,6 +173,7 @@ btnReiniciarTemporizador.addEventListener("click", () => {
   clearInterval(intervaloTemporizador)
   intervaloTemporizador = null
   tempoTemporizador = obterTempoTemporizador()
+  esconderAvisoTemporizador()
   atualizarTemporizador()
 })
 
