@@ -52,11 +52,31 @@ function formatarTempo(tempo) {
   }
 }
 
+function atualizarBotoesCronometro() {
+  const cronometroAtivo = intervalo !== null
+
+  btnIniciar.disabled = cronometroAtivo
+  btnPausar.disabled = !cronometroAtivo
+  btnReiniciar.disabled = tempoCronometro === 0 && !cronometroAtivo
+  btnVolta.disabled = tempoCronometro === 0
+}
+
+function atualizarBotoesTemporizador() {
+  const temporizadorAtivo = intervaloTemporizador !== null
+  const tempoDefinido = obterTempoTemporizador()
+
+  btnIniciarTemporizador.disabled = temporizadorAtivo || tempoDefinido === 0
+  btnPausarTemporizador.disabled = !temporizadorAtivo
+  btnReiniciarTemporizador.disabled =
+    tempoTemporizador === 0 && tempoDefinido === 0
+}
+
 function atualizarCronometro() {
   const tempoFormatado = formatarTempo(tempoCronometro)
 
   tempoPrincipal.textContent = tempoFormatado.principal
   milissegundos.textContent = tempoFormatado.ms
+  atualizarBotoesCronometro()
 }
 
 function atualizarTemporizador() {
@@ -67,6 +87,8 @@ function atualizarTemporizador() {
   temporizador.textContent = [horas, minutos, segundos]
     .map((valor) => String(valor).padStart(2, "0"))
     .join(":")
+
+  atualizarBotoesTemporizador()
 }
 
 function obterTempoTemporizador() {
@@ -75,6 +97,23 @@ function obterTempoTemporizador() {
   const segundos = Number(segundosTemporizador.value) || 0
 
   return (horas * 3600 + minutos * 60 + segundos) * 1000
+}
+
+function normalizarCamposTemporizador() {
+  const campos = [
+    { input: horasTemporizador, max: 99 },
+    { input: minutosTemporizador, max: 59 },
+    { input: segundosTemporizador, max: 59 },
+  ]
+
+  campos.forEach(({ input, max }) => {
+    let valor = Number(input.value) || 0
+
+    if (valor < 0) valor = 0
+    if (valor > max) valor = max
+
+    input.value = valor
+  })
 }
 
 function mostrarAvisoTemporizador() {
@@ -106,12 +145,18 @@ btnIniciar.addEventListener("click", () => {
     tempoCronometro = Date.now() - inicioCronometro
     atualizarCronometro()
   }, 10)
+  atualizarBotoesCronometro()
 })
 
 btnPausar.addEventListener("click", () => {
+  if (intervalo === null) {
+    return
+  }
+
   clearInterval(intervalo)
   intervalo = null
   tempoPausado = tempoCronometro
+  atualizarBotoesCronometro()
 })
 
 btnReiniciar.addEventListener("click", () => {
@@ -124,6 +169,10 @@ btnReiniciar.addEventListener("click", () => {
 })
 
 btnVolta.addEventListener("click", () => {
+  if (tempoCronometro === 0) {
+    return
+  }
+
   voltas.push(tempoCronometro)
   mostrarVoltas()
 })
@@ -135,18 +184,19 @@ btnLimparVoltas.addEventListener("click", () => {
 
 btnIniciarTemporizador.addEventListener("click", () => {
   esconderAvisoTemporizador()
+  normalizarCamposTemporizador()
 
   if (intervaloTemporizador !== null) {
     return
   }
 
-  if (tempoTemporizador === 0) {
-    tempoTemporizador = obterTempoTemporizador()
-  }
+  const tempoDefinido = obterTempoTemporizador()
 
-  if (tempoTemporizador === 0) {
+  if (tempoDefinido === 0) {
     return
   }
+
+  tempoTemporizador = tempoDefinido
 
   let ultimaAtualizacao = Date.now()
   intervaloTemporizador = setInterval(() => {
@@ -160,13 +210,21 @@ btnIniciarTemporizador.addEventListener("click", () => {
       clearInterval(intervaloTemporizador)
       intervaloTemporizador = null
       mostrarAvisoTemporizador()
+      atualizarBotoesTemporizador()
     }
   }, 100)
+
+  atualizarBotoesTemporizador()
 })
 
 btnPausarTemporizador.addEventListener("click", () => {
+  if (intervaloTemporizador === null) {
+    return
+  }
+
   clearInterval(intervaloTemporizador)
   intervaloTemporizador = null
+  atualizarBotoesTemporizador()
 })
 
 btnReiniciarTemporizador.addEventListener("click", () => {
@@ -176,6 +234,15 @@ btnReiniciarTemporizador.addEventListener("click", () => {
   esconderAvisoTemporizador()
   atualizarTemporizador()
 })
+;[horasTemporizador, minutosTemporizador, segundosTemporizador].forEach(
+  (input) => {
+    input.addEventListener("input", () => {
+      normalizarCamposTemporizador()
+      tempoTemporizador = obterTempoTemporizador()
+      atualizarTemporizador()
+    })
+  },
+)
 
 function mostrarVoltas() {
   listaVoltas.innerHTML = ""

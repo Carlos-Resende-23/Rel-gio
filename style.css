@@ -273,6 +273,23 @@ button:hover {
   transform: translateY(-2px);
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+button:disabled:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.08)
+  );
+  box-shadow: none;
+  transform: none;
+}
+
 button:active {
   transform: translateY(1px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
