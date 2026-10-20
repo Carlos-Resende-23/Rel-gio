@@ -69,6 +69,9 @@ function atualizarBotoesTemporizador() {
   btnPausarTemporizador.disabled = !temporizadorAtivo
   btnReiniciarTemporizador.disabled =
     tempoTemporizador === 0 && tempoDefinido === 0
+  horasTemporizador.disabled = temporizadorAtivo
+  minutosTemporizador.disabled = temporizadorAtivo
+  segundosTemporizador.disabled = temporizadorAtivo
 }
 
 function atualizarCronometro() {
@@ -196,7 +199,9 @@ btnIniciarTemporizador.addEventListener("click", () => {
     return
   }
 
-  tempoTemporizador = tempoDefinido
+  if (tempoTemporizador === 0) {
+    tempoTemporizador = tempoDefinido
+  }
 
   let ultimaAtualizacao = Date.now()
   intervaloTemporizador = setInterval(() => {
@@ -265,7 +270,7 @@ function mostrarVoltas() {
 atualizarCronometro()
 atualizarTemporizador()
 
-const relogio = setInterval(function time() {
+function atualizarRelogio() {
   let dateToday = new Date()
   let hr = dateToday.getHours()
   let min = dateToday.getMinutes()
@@ -285,7 +290,10 @@ const relogio = setInterval(function time() {
   minutos.textContent = min
   segundos.textContent = s
   data.textContent = `${diaSemana} - ${dia}/${mes}/${ano}`
-}, 1000)
+}
+
+atualizarRelogio()
+setInterval(atualizarRelogio, 1000)
 
 const temaBtn = document.getElementById("tema-btn")
 

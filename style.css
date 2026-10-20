@@ -120,6 +120,10 @@ body {
     transform 0.25s ease;
 }
 
+.aviso-temporizador[hidden] {
+  display: none;
+}
+
 .aviso-temporizador.visible {
   opacity: 1;
   transform: translateY(0);
