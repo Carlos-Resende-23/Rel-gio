@@ -23,6 +23,7 @@ const btnPausarTemporizador = document.getElementById("pausar-temporizador")
 const btnReiniciarTemporizador = document.getElementById(
   "reiniciar-temporizador",
 )
+const btnSilenciarTemporizador = document.getElementById("silenciar-temporizador")
 
 const voltas = []
 
@@ -33,6 +34,55 @@ let intervalo = null
 let tempoTemporizador = 0
 let intervaloTemporizador = null
 let avisoTemporizadorTimer = null
+let audioTemporizadorAtivado = true
+let audioContext = null
+
+function obterAudioContext() {
+  if (!audioContext) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext
+    if (!AudioCtx) {
+      return null
+    }
+    audioContext = new AudioCtx()
+  }
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume()
+  }
+
+  return audioContext
+}
+
+function tocarAlarmeTemporizador() {
+  if (!audioTemporizadorAtivado) {
+    return
+  }
+
+  const context = obterAudioContext()
+  if (!context) {
+    return
+  }
+
+  const oscillator = context.createOscillator()
+  const gainNode = context.createGain()
+
+  oscillator.type = "sine"
+  oscillator.frequency.setValueAtTime(880, context.currentTime)
+  oscillator.frequency.exponentialRampToValueAtTime(
+    440,
+    context.currentTime + 0.3,
+  )
+
+  gainNode.gain.setValueAtTime(0.0001, context.currentTime)
+  gainNode.gain.exponentialRampToValueAtTime(0.16, context.currentTime + 0.03)
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.8)
+
+  oscillator.connect(gainNode)
+  gainNode.connect(context.destination)
+
+  oscillator.start()
+  oscillator.stop(context.currentTime + 0.8)
+}
 
 function formatarTempo(tempo) {
   let horas = Math.floor(tempo / 3600000)
@@ -130,12 +180,24 @@ function mostrarAvisoTemporizador() {
     avisoTemporizador.classList.remove("visible")
     avisoTemporizador.hidden = true
   }, 2500)
+
+  tocarAlarmeTemporizador()
 }
 
 function esconderAvisoTemporizador() {
   clearTimeout(avisoTemporizadorTimer)
   avisoTemporizador.classList.remove("visible")
   avisoTemporizador.hidden = true
+}
+
+function atualizarBotaoSilenciarTemporizador() {
+  btnSilenciarTemporizador.textContent = audioTemporizadorAtivado ? "🔊" : "🔇"
+  btnSilenciarTemporizador.setAttribute(
+    "aria-label",
+    audioTemporizadorAtivado
+      ? "Silenciar alarme do temporizador"
+      : "Ativar alarme do temporizador",
+  )
 }
 
 btnIniciar.addEventListener("click", () => {
@@ -239,6 +301,12 @@ btnReiniciarTemporizador.addEventListener("click", () => {
   esconderAvisoTemporizador()
   atualizarTemporizador()
 })
+
+btnSilenciarTemporizador.addEventListener("click", () => {
+  audioTemporizadorAtivado = !audioTemporizadorAtivado
+  atualizarBotaoSilenciarTemporizador()
+})
+
 ;[horasTemporizador, minutosTemporizador, segundosTemporizador].forEach(
   (input) => {
     input.addEventListener("input", () => {
@@ -269,6 +337,7 @@ function mostrarVoltas() {
 
 atualizarCronometro()
 atualizarTemporizador()
+atualizarBotaoSilenciarTemporizador()
 
 function atualizarRelogio() {
   let dateToday = new Date()
