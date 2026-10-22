@@ -65,23 +65,29 @@ function tocarAlarmeTemporizador() {
 
   const oscillator = context.createOscillator()
   const gainNode = context.createGain()
+  const inicio = context.currentTime
+  const duracaoBipe = 0.3
+  const intervaloBipe = 0.4
+  const frequencias = [880, 660, 880, 660]
 
-  oscillator.type = "sine"
-  oscillator.frequency.setValueAtTime(880, context.currentTime)
-  oscillator.frequency.exponentialRampToValueAtTime(
-    440,
-    context.currentTime + 0.3,
-  )
-
-  gainNode.gain.setValueAtTime(0.0001, context.currentTime)
-  gainNode.gain.exponentialRampToValueAtTime(0.16, context.currentTime + 0.03)
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.8)
+  oscillator.type = "triangle"
+  frequencias.forEach((frequencia, indice) => {
+    const inicioBipe = inicio + indice * intervaloBipe
+    gainNode.gain.setValueAtTime(0.0001, inicioBipe)
+    gainNode.gain.linearRampToValueAtTime(0.16, inicioBipe + 0.01)
+    gainNode.gain.setValueAtTime(0.16, inicioBipe + duracaoBipe - 0.02)
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.0001,
+      inicioBipe + duracaoBipe,
+    )
+    oscillator.frequency.setValueAtTime(frequencia, inicioBipe)
+  })
 
   oscillator.connect(gainNode)
   gainNode.connect(context.destination)
 
-  oscillator.start()
-  oscillator.stop(context.currentTime + 0.8)
+  oscillator.start(inicio)
+  oscillator.stop(inicio + (frequencias.length - 1) * intervaloBipe + duracaoBipe)
 }
 
 function formatarTempo(tempo) {
