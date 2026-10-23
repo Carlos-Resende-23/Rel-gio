@@ -151,31 +151,55 @@ body {
 
 .campos-temporizador {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
+  gap: 14px;
+  margin-top: 18px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .campos-temporizador label {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
-  font-size: 14px;
-  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
 }
 
 .campos-temporizador input {
-  width: 76px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 8px;
-  padding: 10px 8px;
+  width: 88px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  padding: 12px 10px;
   box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.16);
+  background: rgba(0, 0, 0, 0.24);
   color: white;
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: 700;
   text-align: center;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.campos-temporizador input:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.campos-temporizador input:focus-visible {
+  outline: none;
+  border-color: #a8e6ff;
+  box-shadow: 0 0 0 3px rgba(168, 230, 255, 0.2);
+}
+
+.campos-temporizador input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .milissegundos {
