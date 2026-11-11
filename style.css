@@ -1,3 +1,39 @@
+:root {
+  --bg-start: rgb(12, 139, 0);
+  --bg-middle: rgb(1, 44, 73);
+  --bg-end: rgb(151, 87, 180);
+  --panel-bg: rgba(255, 255, 255, 0.08);
+  --panel-strong: rgba(255, 255, 255, 0.12);
+  --text-color: #f5f8ff;
+  --muted-text: rgba(255, 255, 255, 0.85);
+  --input-bg: rgba(0, 0, 0, 0.24);
+  --input-border: rgba(255, 255, 255, 0.35);
+  --input-hover: rgba(255, 255, 255, 0.6);
+  --shadow: rgba(0, 0, 0, 0.2);
+  --soft-shadow: rgba(0, 0, 0, 0.14);
+  --chip-bg: rgba(0, 0, 0, 0.14);
+  --button-bg: rgba(255, 255, 255, 0.12);
+  --button-border: rgba(255, 255, 255, 0.2);
+}
+
+body.dark {
+  --bg-start: #06131d;
+  --bg-middle: #101d2d;
+  --bg-end: #1d224d;
+  --panel-bg: rgba(15, 23, 42, 0.7);
+  --panel-strong: rgba(30, 41, 59, 0.92);
+  --text-color: #e2e8f0;
+  --muted-text: rgba(226, 232, 240, 0.92);
+  --input-bg: rgba(15, 23, 42, 0.8);
+  --input-border: rgba(148, 163, 184, 0.5);
+  --input-hover: rgba(191, 219, 254, 0.85);
+  --shadow: rgba(2, 6, 23, 0.55);
+  --soft-shadow: rgba(15, 23, 42, 0.4);
+  --chip-bg: rgba(15, 23, 42, 0.72);
+  --button-bg: rgba(30, 41, 59, 0.86);
+  --button-border: rgba(148, 163, 184, 0.35);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,17 +44,48 @@ body {
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
-  color: white;
+  color: var(--text-color);
   background: linear-gradient(
     -240deg,
-    rgb(12, 139, 0),
-    rgb(1, 44, 73),
-    rgb(151, 87, 180)
+    var(--bg-start),
+    var(--bg-middle),
+    var(--bg-end)
   );
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+button,
+input {
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+
+button {
+  cursor: pointer;
+}
+
+#tema-btn {
+  margin-bottom: 12px;
+  padding: 10px 16px;
+  border: 1px solid var(--button-border);
+  border-radius: 999px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 8px 18px var(--shadow);
+}
+
+#tema-btn:hover {
+  transform: translateY(-1px);
 }
 
 .relogio {
@@ -26,25 +93,25 @@ body {
   padding: 18px 24px 20px;
   box-sizing: border-box;
   border-radius: 10px;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 14px 32px var(--shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--panel-bg);
 }
 
 .cronometro-container {
   width: min(700px, 100%);
   border-radius: 10px;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 14px 32px var(--shadow);
   display: flex;
   padding: 18px;
   margin-top: 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  background: var(--panel-bg);
+  color: var(--text-color);
   box-sizing: border-box;
   flex-wrap: wrap;
 }
@@ -52,15 +119,15 @@ body {
 .temporizador-container {
   width: min(700px, 100%);
   border-radius: 10px;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 14px 32px var(--shadow);
   display: flex;
   padding: 18px;
   margin-top: 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  background: var(--panel-bg);
+  color: var(--text-color);
   box-sizing: border-box;
 }
 
@@ -171,12 +238,12 @@ body {
 
 .campos-temporizador input {
   width: 88px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--input-border);
   border-radius: 12px;
   padding: 12px 10px;
   box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.24);
-  color: white;
+  background: var(--input-bg);
+  color: var(--text-color);
   font-size: 24px;
   font-weight: 700;
   text-align: center;
@@ -187,7 +254,7 @@ body {
 }
 
 .campos-temporizador input:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--input-hover);
   background: rgba(0, 0, 0, 0.32);
 }
 
@@ -220,9 +287,10 @@ body {
   padding: 16px 20px;
   margin: 12px 0;
   font-size: 40px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 8px 20px var(--soft-shadow);
   border-radius: 8px;
-  color: aliceblue;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 #data {
@@ -230,9 +298,9 @@ body {
   padding: 9px 18px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.14);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
-  color: rgba(255, 255, 255, 0.88);
+  background: var(--chip-bg);
+  box-shadow: 0 5px 14px var(--soft-shadow);
+  color: var(--muted-text);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.8px;

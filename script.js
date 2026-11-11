@@ -372,14 +372,16 @@ setInterval(atualizarRelogio, 1000)
 
 const temaBtn = document.getElementById("tema-btn")
 
-temaBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark")
-  salvarTema()
-})
+function atualizarTextoTema() {
+  const temaAtivo = document.body.classList.contains("dark")
+  temaBtn.textContent = temaAtivo ? "Tema claro" : "Tema escuro"
+  temaBtn.setAttribute("aria-pressed", String(temaAtivo))
+}
 
 function salvarTema() {
   const isDark = document.body.classList.contains("dark")
-  localStorage.setItem("temaEscuro", isDark)
+  localStorage.setItem("temaEscuro", String(isDark))
+  atualizarTextoTema()
 }
 
 function carregarTema() {
@@ -388,6 +390,13 @@ function carregarTema() {
   if (temaSalvo === "true") {
     document.body.classList.add("dark")
   }
+
+  atualizarTextoTema()
 }
+
+temaBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark")
+  salvarTema()
+})
 
 carregarTema()
