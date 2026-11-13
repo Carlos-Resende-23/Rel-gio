@@ -330,13 +330,20 @@ function mostrarVoltas() {
     const li = document.createElement("li")
 
     const tempoFormatado = formatarTempo(volta)
-    li.append(`Volta ${index + 1}: ${tempoFormatado.principal}`)
+    const numeroVolta = document.createElement("span")
+    numeroVolta.className = "numero-volta"
+    numeroVolta.textContent = `Volta ${index + 1}`
+
+    const tempoVolta = document.createElement("span")
+    tempoVolta.className = "tempo-volta"
+    tempoVolta.textContent = tempoFormatado.principal
 
     const milissegundosVolta = document.createElement("span")
     milissegundosVolta.className = "milissegundos"
     milissegundosVolta.textContent = tempoFormatado.ms
-    li.appendChild(milissegundosVolta)
 
+    tempoVolta.appendChild(milissegundosVolta)
+    li.append(numeroVolta, tempoVolta)
     listaVoltas.appendChild(li)
   })
 }
