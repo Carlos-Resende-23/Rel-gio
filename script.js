@@ -37,6 +37,43 @@ let avisoTemporizadorTimer = null
 let audioTemporizadorAtivado = true
 let audioContext = null
 
+const CHAVE_ESTADO = "estadoFerramentasTempo"
+
+function lerEstadoArmazenado() {
+  try {
+    return JSON.parse(localStorage.getItem(CHAVE_ESTADO)) || {}
+  } catch {
+    return {}
+  }
+}
+
+function salvarEstado() {
+  const estado = {
+    cronometro: {
+      tempo: tempoCronometro,
+      tempoPausado,
+      ativo: intervalo !== null,
+      inicio: intervalo !== null ? inicioCronometro : 0,
+      voltas: [...voltas],
+    },
+    temporizador: {
+      tempo: tempoTemporizador,
+      ativo: intervaloTemporizador !== null,
+      inicio: intervaloTemporizador !== null ? Date.now() : 0,
+      horas: horasTemporizador.value,
+      minutos: minutosTemporizador.value,
+      segundos: segundosTemporizador.value,
+      somAtivado: audioTemporizadorAtivado,
+    },
+  }
+
+  try {
+    localStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado))
+  } catch {
+    // O aplicativo continua funcionando caso o armazenamento seja indisponível.
+  }
+}
+
 function obterAudioContext() {
   if (!audioContext) {
     const AudioCtx = window.AudioContext || window.webkitAudioContext
@@ -217,6 +254,7 @@ btnIniciar.addEventListener("click", () => {
     atualizarCronometro()
   }, 10)
   atualizarBotoesCronometro()
+  salvarEstado()
 })
 
 btnPausar.addEventListener("click", () => {
@@ -228,6 +266,7 @@ btnPausar.addEventListener("click", () => {
   intervalo = null
   tempoPausado = tempoCronometro
   atualizarBotoesCronometro()
+  salvarEstado()
 })
 
 btnReiniciar.addEventListener("click", () => {
@@ -237,6 +276,7 @@ btnReiniciar.addEventListener("click", () => {
   tempoCronometro = 0
   tempoPausado = 0
   atualizarCronometro()
+  salvarEstado()
 })
 
 btnVolta.addEventListener("click", () => {
@@ -246,11 +286,13 @@ btnVolta.addEventListener("click", () => {
 
   voltas.push(tempoCronometro)
   mostrarVoltas()
+  salvarEstado()
 })
 
 btnLimparVoltas.addEventListener("click", () => {
   voltas.length = 0
   mostrarVoltas()
+  salvarEstado()
 })
 
 btnIniciarTemporizador.addEventListener("click", () => {
@@ -278,16 +320,19 @@ btnIniciarTemporizador.addEventListener("click", () => {
     ultimaAtualizacao = agora
     tempoTemporizador = Math.max(0, tempoTemporizador - tempoDecorrido)
     atualizarTemporizador()
+    salvarEstado()
 
     if (tempoTemporizador === 0) {
       clearInterval(intervaloTemporizador)
       intervaloTemporizador = null
       mostrarAvisoTemporizador()
       atualizarBotoesTemporizador()
+      salvarEstado()
     }
   }, 100)
 
   atualizarBotoesTemporizador()
+  salvarEstado()
 })
 
 btnPausarTemporizador.addEventListener("click", () => {
@@ -298,6 +343,7 @@ btnPausarTemporizador.addEventListener("click", () => {
   clearInterval(intervaloTemporizador)
   intervaloTemporizador = null
   atualizarBotoesTemporizador()
+  salvarEstado()
 })
 
 btnReiniciarTemporizador.addEventListener("click", () => {
@@ -306,11 +352,13 @@ btnReiniciarTemporizador.addEventListener("click", () => {
   tempoTemporizador = obterTempoTemporizador()
   esconderAvisoTemporizador()
   atualizarTemporizador()
+  salvarEstado()
 })
 
 btnSilenciarTemporizador.addEventListener("click", () => {
   audioTemporizadorAtivado = !audioTemporizadorAtivado
   atualizarBotaoSilenciarTemporizador()
+  salvarEstado()
 })
 
 ;[horasTemporizador, minutosTemporizador, segundosTemporizador].forEach(
@@ -319,6 +367,7 @@ btnSilenciarTemporizador.addEventListener("click", () => {
       normalizarCamposTemporizador()
       tempoTemporizador = obterTempoTemporizador()
       atualizarTemporizador()
+      salvarEstado()
     })
   },
 )
@@ -348,9 +397,97 @@ function mostrarVoltas() {
   })
 }
 
+function carregarEstado() {
+  const estado = lerEstadoArmazenado()
+  const estadoCronometro = estado.cronometro
+  const estadoTemporizador = estado.temporizador
+
+  if (estadoCronometro) {
+    tempoPausado =
+      Number.isFinite(estadoCronometro.tempoPausado)
+        ? estadoCronometro.tempoPausado
+        : Number.isFinite(estadoCronometro.tempo)
+          ? estadoCronometro.tempo
+          : 0
+    tempoCronometro = tempoPausado
+
+    if (estadoCronometro.ativo) {
+      const inicioSalvo = Number(estadoCronometro.inicio) || 0
+      inicioCronometro = inicioSalvo
+      tempoCronometro = Date.now() - inicioCronometro
+      tempoPausado = tempoCronometro
+      intervalo = setInterval(() => {
+        tempoCronometro = Date.now() - inicioCronometro
+        tempoPausado = tempoCronometro
+        atualizarCronometro()
+        salvarEstado()
+      }, 10)
+    }
+
+    if (Array.isArray(estadoCronometro.voltas)) {
+      voltas.push(
+        ...estadoCronometro.voltas.filter((volta) =>
+          Number.isFinite(volta),
+        ),
+      )
+    }
+  }
+
+  if (estadoTemporizador) {
+    horasTemporizador.value = estadoTemporizador.horas ?? "0"
+    minutosTemporizador.value = estadoTemporizador.minutos ?? "0"
+    segundosTemporizador.value = estadoTemporizador.segundos ?? "0"
+    normalizarCamposTemporizador()
+
+    audioTemporizadorAtivado =
+      estadoTemporizador.somAtivado !== false
+
+    tempoTemporizador = Number.isFinite(estadoTemporizador.tempo)
+      ? estadoTemporizador.tempo
+      : obterTempoTemporizador()
+
+    if (estadoTemporizador.ativo) {
+      const inicioSalvo = Number(estadoTemporizador.inicio) || Date.now()
+      const tempoDecorrido = Date.now() - inicioSalvo
+      tempoTemporizador = Math.max(0, tempoTemporizador - tempoDecorrido)
+
+      if (tempoTemporizador > 0) {
+        let ultimaAtualizacao = Date.now()
+        intervaloTemporizador = setInterval(() => {
+          const agora = Date.now()
+          tempoTemporizador = Math.max(
+            0,
+            tempoTemporizador - (agora - ultimaAtualizacao),
+          )
+          ultimaAtualizacao = agora
+          atualizarTemporizador()
+          salvarEstado()
+
+          if (tempoTemporizador === 0) {
+            clearInterval(intervaloTemporizador)
+            intervaloTemporizador = null
+            mostrarAvisoTemporizador()
+            atualizarBotoesTemporizador()
+            salvarEstado()
+          }
+        }, 100)
+      } else {
+        intervaloTemporizador = null
+        mostrarAvisoTemporizador()
+      }
+    }
+  }
+
+  salvarEstado()
+}
+
+carregarEstado()
+mostrarVoltas()
 atualizarCronometro()
 atualizarTemporizador()
 atualizarBotaoSilenciarTemporizador()
+
+window.addEventListener("pagehide", salvarEstado)
 
 function atualizarRelogio() {
   let dateToday = new Date()
