@@ -24,6 +24,9 @@ const btnReiniciarTemporizador = document.getElementById(
   "reiniciar-temporizador",
 )
 const btnSilenciarTemporizador = document.getElementById("silenciar-temporizador")
+const btnNotificacoesTemporizador = document.getElementById(
+  "notificacoes-temporizador",
+)
 
 const voltas = []
 
@@ -36,6 +39,8 @@ let intervaloTemporizador = null
 let avisoTemporizadorTimer = null
 let audioTemporizadorAtivado = true
 let audioContext = null
+let fimTemporizador = 0
+let notificacaoJaEnviada = false
 
 const CHAVE_ESTADO = "estadoFerramentasTempo"
 
@@ -64,6 +69,8 @@ function salvarEstado() {
       minutos: minutosTemporizador.value,
       segundos: segundosTemporizador.value,
       somAtivado: audioTemporizadorAtivado,
+      fim: fimTemporizador,
+      notificacaoEnviada: notificacaoJaEnviada,
     },
   }
 
@@ -125,6 +132,79 @@ function tocarAlarmeTemporizador() {
 
   oscillator.start(inicio)
   oscillator.stop(inicio + (frequencias.length - 1) * intervaloBipe + duracaoBipe)
+}
+
+function atualizarBotaoNotificacoes() {
+  if (!("Notification" in window)) {
+    btnNotificacoesTemporizador.textContent = "🔕"
+    btnNotificacoesTemporizador.disabled = true
+    btnNotificacoesTemporizador.title =
+      "Notificacoes nao suportadas neste navegador"
+    return
+  }
+
+  const ativadas = Notification.permission === "granted"
+  btnNotificacoesTemporizador.textContent = ativadas ? "🔔" : "🔕"
+  btnNotificacoesTemporizador.setAttribute(
+    "aria-label",
+    ativadas
+      ? "Notificacoes do temporizador ativadas"
+      : "Ativar notificacoes do temporizador",
+  )
+  btnNotificacoesTemporizador.title = ativadas
+    ? "Notificacoes ativadas"
+    : "Ativar notificacoes"
+}
+
+async function solicitarPermissaoNotificacoes() {
+  if (!("Notification" in window)) {
+    return
+  }
+
+  if (Notification.permission === "granted") {
+    atualizarBotaoNotificacoes()
+    return
+  }
+
+  if (Notification.permission === "denied") {
+    atualizarBotaoNotificacoes()
+    alert(
+      "As notificacoes foram bloqueadas. Ative-as nas configuracoes do navegador.",
+    )
+    return
+  }
+
+  const permissao = await Notification.requestPermission()
+  if (permissao === "granted") {
+    new Notification("Notificacoes ativadas", {
+      body: "Voce sera avisado quando o temporizador terminar.",
+      icon: "icon.svg",
+    })
+  }
+  atualizarBotaoNotificacoes()
+}
+
+function finalizarTemporizador() {
+  clearInterval(intervaloTemporizador)
+  intervaloTemporizador = null
+  fimTemporizador = 0
+  mostrarAvisoTemporizador()
+  atualizarBotoesTemporizador()
+
+  if (
+    !notificacaoJaEnviada &&
+    "Notification" in window &&
+    Notification.permission === "granted"
+  ) {
+    notificacaoJaEnviada = true
+    new Notification("Tempo esgotado!", {
+      body: "Seu temporizador chegou ao fim.",
+      icon: "icon.svg",
+      tag: "temporizador-esgotado",
+    })
+  }
+
+  salvarEstado()
 }
 
 function formatarTempo(tempo) {
@@ -313,21 +393,15 @@ btnIniciarTemporizador.addEventListener("click", () => {
     tempoTemporizador = tempoDefinido
   }
 
-  let ultimaAtualizacao = Date.now()
+  fimTemporizador = Date.now() + tempoTemporizador
+  notificacaoJaEnviada = false
   intervaloTemporizador = setInterval(() => {
-    const agora = Date.now()
-    const tempoDecorrido = agora - ultimaAtualizacao
-    ultimaAtualizacao = agora
-    tempoTemporizador = Math.max(0, tempoTemporizador - tempoDecorrido)
+    tempoTemporizador = Math.max(0, fimTemporizador - Date.now())
     atualizarTemporizador()
     salvarEstado()
 
     if (tempoTemporizador === 0) {
-      clearInterval(intervaloTemporizador)
-      intervaloTemporizador = null
-      mostrarAvisoTemporizador()
-      atualizarBotoesTemporizador()
-      salvarEstado()
+      finalizarTemporizador()
     }
   }, 100)
 
@@ -342,6 +416,7 @@ btnPausarTemporizador.addEventListener("click", () => {
 
   clearInterval(intervaloTemporizador)
   intervaloTemporizador = null
+  fimTemporizador = 0
   atualizarBotoesTemporizador()
   salvarEstado()
 })
@@ -350,6 +425,8 @@ btnReiniciarTemporizador.addEventListener("click", () => {
   clearInterval(intervaloTemporizador)
   intervaloTemporizador = null
   tempoTemporizador = obterTempoTemporizador()
+  fimTemporizador = 0
+  notificacaoJaEnviada = false
   esconderAvisoTemporizador()
   atualizarTemporizador()
   salvarEstado()
@@ -359,6 +436,10 @@ btnSilenciarTemporizador.addEventListener("click", () => {
   audioTemporizadorAtivado = !audioTemporizadorAtivado
   atualizarBotaoSilenciarTemporizador()
   salvarEstado()
+})
+
+btnNotificacoesTemporizador.addEventListener("click", () => {
+  solicitarPermissaoNotificacoes()
 })
 
 ;[horasTemporizador, minutosTemporizador, segundosTemporizador].forEach(
@@ -445,35 +526,30 @@ function carregarEstado() {
     tempoTemporizador = Number.isFinite(estadoTemporizador.tempo)
       ? estadoTemporizador.tempo
       : obterTempoTemporizador()
+    notificacaoJaEnviada =
+      estadoTemporizador.notificacaoEnviada === true
 
     if (estadoTemporizador.ativo) {
-      const inicioSalvo = Number(estadoTemporizador.inicio) || Date.now()
-      const tempoDecorrido = Date.now() - inicioSalvo
-      tempoTemporizador = Math.max(0, tempoTemporizador - tempoDecorrido)
+      const fimSalvo =
+        Number(estadoTemporizador.fim) ||
+        (Number(estadoTemporizador.inicio) || Date.now()) +
+          tempoTemporizador
+      fimTemporizador = fimSalvo
+      tempoTemporizador = Math.max(0, fimSalvo - Date.now())
 
       if (tempoTemporizador > 0) {
-        let ultimaAtualizacao = Date.now()
         intervaloTemporizador = setInterval(() => {
-          const agora = Date.now()
-          tempoTemporizador = Math.max(
-            0,
-            tempoTemporizador - (agora - ultimaAtualizacao),
-          )
-          ultimaAtualizacao = agora
+          tempoTemporizador = Math.max(0, fimTemporizador - Date.now())
           atualizarTemporizador()
           salvarEstado()
 
           if (tempoTemporizador === 0) {
-            clearInterval(intervaloTemporizador)
-            intervaloTemporizador = null
-            mostrarAvisoTemporizador()
-            atualizarBotoesTemporizador()
-            salvarEstado()
+            finalizarTemporizador()
           }
         }, 100)
       } else {
         intervaloTemporizador = null
-        mostrarAvisoTemporizador()
+        finalizarTemporizador()
       }
     }
   }
@@ -486,6 +562,25 @@ mostrarVoltas()
 atualizarCronometro()
 atualizarTemporizador()
 atualizarBotaoSilenciarTemporizador()
+atualizarBotaoNotificacoes()
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && fimTemporizador > 0) {
+    tempoTemporizador = Math.max(0, fimTemporizador - Date.now())
+    atualizarTemporizador()
+    if (tempoTemporizador === 0) {
+      finalizarTemporizador()
+    }
+  }
+})
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {
+      // O aplicativo continua funcionando sem cache offline.
+    })
+  })
+}
 
 window.addEventListener("pagehide", salvarEstado)
 

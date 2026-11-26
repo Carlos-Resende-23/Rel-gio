@@ -1,0 +1,17 @@
+{
+  "name": "Relogio Digital",
+  "short_name": "Relogio",
+  "description": "Relogio digital, cronometro e temporizador.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#101d2d",
+  "theme_color": "#101d2d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

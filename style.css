@@ -205,6 +205,13 @@ button {
   line-height: 1;
 }
 
+#notificacoes-temporizador {
+  min-width: 44px;
+  padding-inline: 10px;
+  font-size: 20px;
+  line-height: 1;
+}
+
 .aviso-temporizador[hidden] {
   display: none;
 }
