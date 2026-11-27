@@ -1,9 +1,14 @@
-const CACHE_NAME = "relogio-v1"
+const CACHE_NAME = "relogio-v2"
+
 const APP_SHELL = [
   "./",
   "./index.html",
   "./style.css",
   "./script.js",
+  "./tempo-utils.js",
+  "./relogio-tema.js",
+  "./cronometro.js",
+  "./temporizador.js",
   "./manifest.json",
   "./icon.svg",
 ]
