@@ -72,6 +72,13 @@ button {
   cursor: pointer;
 }
 
+button svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  fill: currentColor;
+}
+
 #tema-btn {
   margin-bottom: 12px;
   padding: 10px 16px;
